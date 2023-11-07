@@ -10,7 +10,7 @@ class TaskController extends Controller
     public function index()
     {
         $title = trans('main.task_list');
-        $tasks = Task::latest()->paginate(10);
+        $tasks = Task::latest()->paginate(12);
         return view('welcome', compact('title', 'tasks'));
     }
 

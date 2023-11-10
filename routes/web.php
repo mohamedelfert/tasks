@@ -14,7 +14,7 @@ use App\Http\Controllers\TaskController;
 |
 */
 
-Route::get('/', [TaskController::class, 'index']);
+Route::any('/', [TaskController::class, 'index'])->name('tasks.index');
 Route::resource('tasks', TaskController::class);
 Route::get('finish/{id}', [TaskController::class, 'finish'])->name('finish');
 

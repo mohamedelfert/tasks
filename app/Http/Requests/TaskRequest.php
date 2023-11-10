@@ -25,6 +25,7 @@ class TaskRequest extends FormRequest
             'title' => 'required|string',
             'date' => 'required',
             'description' => 'required|string',
+            'category_id' => 'required',
         ];
     }
 }

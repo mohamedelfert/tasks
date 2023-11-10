@@ -3,15 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest;
+use App\Models\Category;
 use App\Models\Task;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $title = trans('main.task_list');
-        $tasks = Task::latest()->paginate(12);
-        return view('welcome', compact('title', 'tasks'));
+        $selectedCategory = $request->has('category') ? $request->get('category') : null;
+        $tasks = Task::with(['category']);
+        if ($selectedCategory != null) {
+            $tasks = $tasks->whereCategoryId($selectedCategory);
+        }
+        $tasks = $tasks->latest()->paginate(9);
+        $categories = Category::all();
+        return view('tasks.index', compact('title', 'tasks', 'categories', 'selectedCategory'));
     }
 
     public function store(TaskRequest $request)
@@ -20,9 +28,8 @@ class TaskController extends Controller
         $task->title = $request->title;
         $task->date = $request->date;
         $task->description = $request->description;
-
+        $task->category_id = $request->category_id;
         $task->save();
-
         toast(__('main.data_added_successfully'), 'success');
         return redirect()->back();
     }
@@ -31,7 +38,7 @@ class TaskController extends Controller
     {
         $title = trans('main.task_list');
         $task = Task::findOrFail($id);
-        return view('show', compact('title', 'task'));
+        return view('tasks.show', compact('title', 'task'));
     }
 
     public function destroy($id)
